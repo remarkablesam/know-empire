@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Know Empire - Peer-to-Peer Skill Trading</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="appicon.png">
+    <style>
+        :root {
+            --dark-bg: #0d0d0d;
+            --text-color: #f0f0f0;
+            --accent-start: #5f72be; /* Blue */
+            --accent-end: #9b23ea;   /* Purple */
+            --gradient-text: linear-gradient(90deg, var(--accent-start), var(--accent-end));
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color:  #0d0d0d;
+            color: var(--text-color);
+            line-height: 1.6;
+            scroll-behavior: smooth; /* For smooth scrolling on desktop */
+        }
+
+        /* Global Typography and Elements */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            margin-top: 0;
+        }
+
+        h1 { font-size: 3.5rem; text-align: center; }
+        h2 { font-size: 2.5rem; text-align: center; margin-bottom: 2rem; background: var(--gradient-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        p { font-size: 1.1rem; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .gradient-text {
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Header & Navigation */
+        header {
+            background-color: rgba(0,0,0,0.5); /* Slightly transparent for effect */
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-color);
+            text-decoration: none;
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex; /* Desktop: flex row */
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            margin-left: 2.5rem;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--gradient-text);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-start); /* Subtle hover effect */
+        }
+
+        .menu-toggle {
+            display: none; /* Hidden on desktop */
+            font-size: 2rem;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        /* Sections */
+        section {
+            padding: 6rem 0; /* Consistent padding for sections */
+            min-height: 100vh; /* Ensures sections take full viewport height on desktop */
+            display: flex;
+            align-items: center; /* Vertically center content */
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        #hero {
+            background: url('https://via.placeholder.com/1920x1080/0a0a0a/2a2a2a?text=Know+Empire+Hero') no-repeat center center/cover; /* Placeholder background */
+            position: relative;
+            text-align: center;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        #hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7); /* Dark overlay */
+            z-index: 1;
+        }
+
+        #hero .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        #hero h1 {
+            font-size: 4.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            background: linear-gradient(45deg, #a737e0, #5f72be); /* Different gradient for hero title */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #hero p {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-cta {
+            padding: 0.8rem 2rem;
+            background: var(--gradient-text);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(155, 35, 234, 0.4);
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(155, 35, 234, 0.6);
+        }
+
+        /* Specific Section Styles (Examples) */
+        .section-content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .grid-item {
+            background-color: #1a1a1a;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border: 1px solid rgba(155, 35, 234, 0.2);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .grid-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-end);
+        }
+
+        .grid-item h3 {
+            font-size: 1.6rem;
+            color: var(--accent-start);
+            margin-bottom: 1rem;
+        }
+
+        .grid-item p {
+            font-size: 1rem;
+            color: #ccc;
+        }
+
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block; /* For the gradient */
+        }
+
+        /* Flow Diagram (How It Works) */
+        .flow-diagram {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .flow-step {
+            flex: 0 0 calc(20% - 2rem); /* 5 items per row */
+            min-width: 180px; /* Minimum width for steps */
+            text-align: center;
+            position: relative;
+            padding: 1.5rem;
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.4);
+            border: 1px solid rgba(95, 114, 190, 0.2);
+        }
+
+        .flow-step:not(:last-child)::after {
+            content: '→'; /* Arrow for flow */
+            position: absolute;
+            right: -2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2.5rem;
+            color: var(--accent-end);
+            font-weight: 800;
+        }
+
+        .flow-step .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .flow-step p {
+            font-size: 0.95rem;
+            margin: 0;
+            color: #ccc;
+        }
+
+        /* NFT Mockups */
+        .nft-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .nft-card {
+            background: linear-gradient(135deg, #1c1c1c, #2a2a2a);
+            border: 2px solid;
+            border-image: linear-gradient(45deg, #5f72be, #9b23ea) 1;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            width: 220px;
+            transform: perspective(1000px) rotateY(5deg);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .nft-card:hover {
+            transform: perspective(1000px) rotateY(0deg) scale(1.05);
+            box-shadow: 0 12px 40px rgba(155, 35, 234, 0.6);
+        }
+
+        .nft-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border: 2px solid var(--accent-start);
+            background-color: #333; /* Placeholder for image */
+        }
+
+        .nft-card h3 {
+            font-size: 1.4rem;
+            color: var(--accent-start);
+            margin-bottom: 0.5rem;
+        }
+
+        .nft-card p {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin: 0;
+        }
+
+        /* Revenue Model / Staking Diagrams */
+        .diagram-box {
+            background-color: #1a1a1a;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border: 1px solid rgba(95, 114, 190, 0.2);
+            text-align: center;
+            max-width: 600px;
+            margin: 3rem auto;
+        }
+
+        .diagram-box .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .diagram-box h3 {
+            color: var(--accent-end);
+            margin-bottom: 1rem;
+        }
+
+        /* Quote */
+        .quote {
+            font-style: italic;
+            font-size: 1.3rem;
+            text-align: center;
+            margin-top: 2rem;
+            color: #bbb;
+        }
+
+        .quote::before, .quote::after {
+            content: '“';
+            font-size: 3rem;
+            vertical-align: middle;
+            line-height: 0;
+            color: var(--accent-start);
+            opacity: 0.7;
+        }
+
+        .quote::after {
+            content: '”';
+        }
+
+        /* Footer */
+        footer {
+            background-color: #080808;
+            padding: 3rem 0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #777;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        footer .cta {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        /* ========================================= */
+        /* RESPONSIVE DESIGN - Media Queries       */
+        /* ========================================= */
+
+        /* Tablet and Mobile (Screens smaller than 1024px) */
+        @media (max-width: 1024px) {
+            h1 { font-size: 2.8rem; }
+            h2 { font-size: 2rem; }
+            section {
+                min-height: auto; /* Remove min-height for 'pages' on smaller screens */
+                padding: 4rem 0;
+            }
+
+            /* Mobile Navigation */
+            .nav-links {
+                display: none; /* Hide desktop nav links by default */
+                flex-direction: column;
+                width: 100%;
+                background-color: var(--dark-bg);
+                position: absolute;
+                top: 70px; /* Adjust based on header height */
+                left: 0;
+                padding: 1rem 0;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            }
+
+            .nav-links.active {
+                display: flex; /* Show when active */
+            }
+
+            .nav-links a {
+                margin: 0.8rem 2rem;
+                padding: 0.5rem 0;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+                text-align: center;
+            }
+
+            .nav-links a:last-child {
+                border-bottom: none;
+            }
+
+            .menu-toggle {
+                display: block; /* Show hamburger menu */
+            }
+
+            /* Adjustments for sections for 'multi-page' feel */
+            /* On mobile, sections will naturally stack as individual 'pages' */
+            /* No specific changes needed for multi-page behavior beyond min-height: auto */
+
+            .flow-step {
+                flex: 0 0 calc(45% - 2rem); /* 2 items per row on tablet */
+            }
+
+            .flow-step:not(:last-child)::after {
+                content: ''; /* Remove arrow on wrapped items */
+            }
+
+            .nft-card {
+                width: 180px;
+                padding: 1rem;
+            }
+        }
+
+        /* Mobile specific (smaller than 768px) */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 1.8rem; }
+            p { font-size: 1rem; }
+
+            .container {
+                padding: 1.5rem;
+            }
+
+            .section-content-grid {
+                grid-template-columns: 1fr; /* Single column on mobile */
+            }
+
+            .flow-step {
+                flex: 0 0 100%; /* Single column flow */
+                min-width: unset;
+            }
+             .flow-step:not(:last-child)::after {
+                content: '↓'; /* Down arrow for vertical flow */
+                top: unset;
+                bottom: -2rem;
+                left: 50%;
+                transform: translateX(-50%) rotate(0deg);
+            }
+            .flow-step:last-child::after {
+                content: ''; /* Remove arrow on last item */
+            }
+
+            .nft-grid {
+                flex-direction: column; /* Stack NFTs vertically */
+                align-items: center;
+            }
+
+            .nft-card {
+                width: 80%; /* Wider on small screens */
+            }
+        }
+
+html, body {
+  overflow-x: hidden;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 64px; /* Collapsed width */
+  height: 100vh;
+  /* background: #181828ee; */
+  /* border-right: 1.5px solid #23234a;
+  box-shadow: 2px 0 16px rgba(95,114,190,0.08); */
+  display: flex;
+  flex-direction: column;
+  z-index: 2100;
+  padding-top: 1.5rem;
+  transition: width 0.25s cubic-bezier(.4,0,.2,1);
+  overflow-x: hidden;
+}
+
+.sidebar.expanded {
+  width: 230px; /* Expanded width */
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 1.5rem 2rem 1.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sidebar-logo img {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  margin-right: 0.7rem;
+}
+
+.sidebar-logo span {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.03em;
+}
+
+.sidebar:not(.expanded) .sidebar-logo span {
+  display: none;
+}
+
+.sidebar-toggle {
+  background: none;
+  border: none;
+  color: #bbb;
+  font-size: 1.5rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  outline: none;
+  transition: color 0.18s;
+}
+
+.sidebar-toggle:hover {
+  color: #9b23ea;
+}
+
+.sidebar-links {
+  list-style: none;
+  padding: 0 1.5rem;
+  margin: 0;
+  flex: 1;
+}
+
+.sidebar-links li {
+  margin-bottom: 1.1rem;
+}
+
+.sidebar-links a {
+  display: flex;
+  align-items: center;
+  color: #bbb;
+  text-decoration: none;
+  font-size: 1.08rem;
+  font-weight: 500;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  transition: background 0.18s, color 0.18s;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sidebar-links a span:first-child {
+  font-size: 1.2rem;
+  margin-right: 0.7rem;
+  min-width: 24px;
+  text-align: center;
+}
+
+.sidebar:not(.expanded) .sidebar-links a span + span {
+  display: none;
+}
+
+.sidebar-links a:hover,
+.sidebar-links a.active {
+  background: rgba(155,35,234,0.10);
+  color: #9b23ea;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 70vw;
+    max-width: 320px;
+    left: -100vw;
+    transition: left 0.3s, width 0.25s cubic-bezier(.4,0,.2,1);
+    z-index: 3000;
+  }
+  .sidebar.open {
+    left: 0;
+    width: 70vw;
+  }
+  .sidebar.expanded {
+    width: 70vw;
+  }
+}   
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 1.5rem 2rem 1.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  min-height: 56px;
+  transition: justify-content 0.25s;
+}
+
+.sidebar-logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  margin-right: 0.7rem;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(95,114,190,0.18);
+  transition: margin 0.25s, width 0.25s, height 0.25s;
+}
+
+.sidebar:not(.expanded) .sidebar-logo {
+  justify-content: center;
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.sidebar:not(.expanded) .sidebar-logo img {
+  margin-right: 0;
+  width: 48px;
+  height: 48px;
+}
+
+.sidebar:not(.expanded) .sidebar-logo span {
+  display: none;
+}
+</style>
+</head>
+<body>
+
+    <header>
+       <!-- Sidebar Navigation -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('expanded')" title="Expand/collapse sidebar">☰</button>
+    <a href="#hero">
+      <img src="appicon.png" alt="Know Empire" />
+      <span>Know Empire</span>
+    </a>
+  </div>
+  <ul class="sidebar-links">
+   <li><a href="#what-is-know-empire"><span><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+  <defs>
+    <linearGradient id="empireIconGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M40-120v-160l80-80v-240l-80-80v-160h80v80h80v-80h80v80h80v-80h80v160l-80 80v40h240v-40l-80-80v-160h80v80h80v-80h80v80h80v-80h80v160l-80 80v240l80 80v160H560v-120q0-33-23.5-56.5T480-320q-33 0-56.5 23.5T400-240v120H40Zm80-80h200v-40q0-66 47-113t113-47q66 0 113 47t47 113v40h200v-47l-80-80v-306l47-47H633l47 47v153H280v-153l47-47H153l47 47v306l-80 80v47Zm360-240Z" fill="url(#empireIconGradient)"/>
+</svg></span><span> What is Know Empire?</span></a></li>
+<li><a href="#why-it-matters"><span><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+  <defs>
+    <linearGradient id="questionGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M424-320q0-81 14.5-116.5T500-514q41-36 62.5-62.5T584-637q0-41-27.5-68T480-732q-51 0-77.5 31T365-638l-103-44q21-64 77-111t141-47q105 0 161.5 58.5T698-641q0 50-21.5 85.5T609-475q-49 47-59.5 71.5T539-320H424Zm56 240q-33 0-56.5-23.5T400-160q0-33 23.5-56.5T480-240q33 0 56.5 23.5T560-160q0 33-23.5 56.5T480-80Z" fill="url(#questionGradient)"/>
+</svg></span><span> Why It Matters</span></a></li>
+  <li><a href="#how-it-works"><span><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+  <defs>
+    <linearGradient id="lightningGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="m422-232 207-248H469l29-227-185 267h139l-30 208ZM320-80l40-280H160l360-520h80l-40 320h240L400-80h-80Zm151-390Z" fill="url(#lightningGradient)"/>
+</svg></span><span> How It Works</span></a></li>
+<li><a href="#micro-nfts"><span><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+  <defs>
+    <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="m354-287 126-76 126 77-33-144 111-96-146-13-58-136-58 135-146 13 111 97-33 143ZM233-120l65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-350Z" fill="url(#starGradient)"/>
+</svg></span><span> Micro-NFTs</span></a></li>
+<!-- <li><a href="#money-model"><span><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+  <defs>
+    <linearGradient id="bookGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M440-200h80v-40h40q17 0 28.5-11.5T600-280v-120q0-17-11.5-28.5T560-440H440v-40h160v-80h-80v-40h-80v40h-40q-17 0-28.5 11.5T360-520v120q0 17 11.5 28.5T400-360h120v40H360v80h80v40ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-560v-160H240v640h480v-480H520ZM240-800v160-160 640-640Z" fill="url(#bookGradient)"/>
+</svg></span><span> Money Model</span></a></li> -->
+<li><a href="#staking"><span><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+  <defs>
+    <linearGradient id="collabIconGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M280-400q-33 0-56.5-23.5T200-480q0-33 23.5-56.5T280-560q33 0 56.5 23.5T360-480q0 33-23.5 56.5T280-400Zm0 160q-100 0-170-70T40-480q0-100 70-170t170-70q67 0 121.5 33t86.5 87h352l120 120-180 180-80-60-80 60-85-60h-47q-32 54-86.5 87T280-240Zm0-80q56 0 98.5-34t56.5-86h125l58 41 82-61 71 55 75-75-40-40H435q-14-52-56.5-86T280-640q-66 0-113 47t-47 113q0 66 47 113t113 47Z" fill="url(#collabIconGradient)"/>
+</svg></span><span> Staking</span></a></li>
+<!-- <li><a href="#team-up"><span>🤝</span><span> Team Up</span></a></li> -->
+<li><a href="#value-of-know"><span><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+  <defs>
+    <linearGradient id="starBadgeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="m344-60-76-128-144-32 14-148-98-112 98-112-14-148 144-32 76-128 136 58 136-58 76 128 144 32-14 148 98 112-98 112 14 148-144 32-76 128-136-58-136 58Zm34-102 102-44 104 44 56-96 110-26-10-112 74-84-74-86 10-112-110-24-58-96-102 44-104-44-56 96-110 24 10 112-74 86 74 84-10 114 110 24 58 96Zm102-318Zm-42 142 226-226-56-58-170 170-86-84-56 56 142 142Z" fill="url(#starBadgeGradient)"/>
+</svg></span><span> $KNOW Value</span></a></li>
+<li><a href="#our-vision"><span><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+  <defs>
+    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="m240-198 79-32q-10-29-18.5-59T287-349l-47 32v119Zm160-42h160q18-40 29-97.5T600-455q0-99-33-187.5T480-779q-54 48-87 136.5T360-455q0 60 11 117.5t29 97.5Zm80-200q-33 0-56.5-23.5T400-520q0-33 23.5-56.5T480-600q33 0 56.5 23.5T560-520q0 33-23.5 56.5T480-440Zm240 242v-119l-47-32q-5 30-13.5 60T641-230l79 32ZM480-881q99 72 149.5 183T680-440l84 56q17 11 26.5 29t9.5 38v237l-199-80H359L160-80v-237q0-20 9.5-38t26.5-29l84-56q0-147 50.5-258T480-881Z" fill="url(#shieldGradient)"/>
+</svg></span><span> Our Vision</span></a></li>
+  </ul>
+</nav>
+    </header>
+
+    <main>
+        <section id="hero">
+            <div class="container">
+                <h1>Unlock Your Potential.<br><span class="gradient-text">Trade Skills. Grow Together.</span></h1>
+                <p>Know Empire is the decentralized platform where you exchange knowledge, build reputation, and level up with a global community.</p>
+                <a href="#what-is-know-empire" class="hero-cta">Explore the Empire</a>
+            </div>
+        </section>
+
+        <section id="what-is-know-empire">
+            <div class="container">
+                <h2>What is Know Empire?</h2>
+                <p class="subtitle" style="text-align: center; font-size: 1.3rem; color: #bbb;">A peer-to-peer skill trading and collaboration platform.</p>
+
+                <div class="section-content-grid">
+                    <div class="grid-item">
+                        <span class="icon">✨</span>
+                        <h3>Trade Skills</h3>
+                        <p>Exchange the skills you know for ones you want to learn. A true reciprocal learning economy.</p>
+                    </div>
+                    <div class="grid-item">
+                        <span class="icon">🤝</span>
+                        <h3>Real People. Real Growth.</h3>
+                        <p>No generic courses, no endless subscriptions. Just direct, impactful interactions with real experts.</p>
+                    </div>
+                    <div class="grid-item">
+                        <span class="icon">🌱</span>
+                        <h3>Level Up Together</h3>
+                        <p>Find your learning partners, collaborate on projects, and build a powerful on-chain reputation.</p>
+                    </div>
+                </div>
+                <p class="quote">“You teach me branding. I teach you how to trade. We both grow.”</p>
+            </div>
+        </section>
+
+        <section id="why-it-matters">
+            <div class="container">
+                <h2>Why Know Empire Exists</h2>
+                <div class="section-content-grid">
+                    <div class="grid-item">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon" height="130px" viewBox="0 -960 960 960" width="77px">
+  <defs>
+    <linearGradient id="courseGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M441-120v-86q-53-12-91.5-46T293-348l74-30q15 48 44.5 73t77.5 25q41 0 69.5-18.5T587-356q0-35-22-55.5T463-458q-86-27-118-64.5T313-614q0-65 42-101t86-41v-84h80v84q50 8 82.5 36.5T651-650l-74 32q-12-32-34-48t-60-16q-44 0-67 19.5T393-614q0 33 30 52t104 40q69 20 104.5 63.5T667-358q0 71-42 108t-104 46v84h-80Z"
+    fill="url(#courseGradient)"/>
+</svg>                        <h3>Courses are Expensive</h3>
+                        <p>High costs often block access to quality education and skill development.</p>
+                    </div>
+                    <div class="grid-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" height="130px" viewBox="0 -960 960 960" width="77px">
+  <defs>
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M440-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm0-80q33 0 56.5-23.5T520-640q0-33-23.5-56.5T440-720q-33 0-56.5 23.5T360-640q0 33 23.5 56.5T440-560ZM884-20 756-148q-21 12-45 20t-51 8q-75 0-127.5-52.5T480-300q0-75 52.5-127.5T660-480q75 0 127.5 52.5T840-300q0 27-8 51t-20 45L940-76l-56 56ZM660-200q42 0 71-29t29-71q0-42-29-71t-71-29q-42 0-71 29t-29 71q0 42 29 71t71 29Zm-540 40v-111q0-34 17-63t47-44q51-26 115-44t142-18q-12 18-20.5 38.5T407-359q-60 5-107 20.5T221-306q-10 5-15.5 14.5T200-271v31h207q5 22 13.5 42t20.5 38H120Zm320-480Zm-33 400Z" fill="url(#iconGradient)"/>
+</svg>
+                        <h3>Good Mentors are Hard to Find</h3>
+                        <p>Connecting with experienced guidance is crucial but often a challenge.</p>
+                    </div>
+                    <div class="grid-item">
+                        <svg xmlns="http://www.w3.org/2000/svg"  height="130px" viewBox="0 -960 960 960" width="77px" class="icon">
+  <defs>
+    <linearGradient id="collabGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M0-240v-63q0-43 44-70t116-27q13 0 25 .5t23 2.5q-14 21-21 44t-7 48v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-26-6.5-49T754-397q11-2 22.5-2.5t23.5-.5q72 0 116 26.5t44 70.5v63H780Zm-455-80h311q-10-20-55.5-35T480-370q-55 0-100.5 15T325-320ZM160-440q-33 0-56.5-23.5T80-520q0-34 23.5-57t56.5-23q34 0 57 23t23 57q0 33-23 56.5T160-440Zm640 0q-33 0-56.5-23.5T720-520q0-34 23.5-57t56.5-23q34 0 57 23t23 57q0 33-23 56.5T800-440Zm-320-40q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Zm0-80q17 0 28.5-11.5T520-600q0-17-11.5-28.5T480-640q-17 0-28.5 11.5T440-600q0 17 11.5 28.5T480-560Zm1 240Zm-1-280Z" fill="url(#collabGradient)"/>
+</svg>
+                        <h3>Collaboration is Rare</h3>
+                        <p>Most online learning is isolated. Real growth comes from working together.</p>
+                    </div>
+                </div>
+                <p style="text-align: center; font-size: 1.2rem; margin-top: 3rem;">Know Empire helps you find partners, trade skills, and build reputation in a supportive, decentralized ecosystem.</p>
+            </div>
+        </section>
+
+        <section id="how-it-works">
+            <div class="container">
+                <h2>How Know Empire Works</h2>
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                       <svg xmlns="http://www.w3.org/2000/svg" height="70px" viewBox="0 -960 960 960" width="70px">
+  <defs>
+    <linearGradient id="empireGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M480-120 200-272v-240L40-600l440-240 440 240v320h-80v-276l-80 44v240L480-120Zm0-332 274-148-274-148-274 148 274 148Zm0 241 200-108v-151L480-360 280-470v151l200 108Zm0-241Zm0 90Zm0 0Z" fill="url(#empireGradient)"/>
+</svg>
+                        <p>Post what you can teach</p>
+                    </div>
+                    <div class="flow-step">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="70px" viewBox="0 -960 960 960" width="70px">
+  <defs>
+    <linearGradient id="vaultGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M480-80q-26 0-47-12.5T400-126q-33 0-56.5-23.5T320-206v-142q-59-39-94.5-103T190-590q0-121 84.5-205.5T480-880q121 0 205.5 84.5T770-590q0 77-35.5 140T640-348v142q0 33-23.5 56.5T560-126q-12 21-33 33.5T480-80Zm-80-126h160v-36H400v36Zm0-76h160v-38H400v38Zm-8-118h58v-108l-88-88 42-42 76 76 76-76 42 42-88 88v108h58q54-26 88-76.5T690-590q0-88-61-149t-149-61q-88 0-149 61t-61 149q0 63 34 113.5t88 76.5Zm88-162Zm0-38Z" fill="url(#vaultGradient)"/>
+</svg>
+                        <p>Post what you want to learn</p>
+                    </div>
+                    <div class="flow-step">
+                       <svg xmlns="http://www.w3.org/2000/svg" height="70px" viewBox="0 -960 960 960" width="70px">
+  <defs>
+    <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M280-160 80-360l200-200 56 57-103 103h287v80H233l103 103-56 57Zm400-240-56-57 103-103H440v-80h287L624-743l56-57 200 200-200 200Z" fill="url(#arrowGradient)"/>
+</svg>
+                        <p>Match → Trade → Grow</p>
+                    </div>
+                    <div class="flow-step">
+                       <svg xmlns="http://www.w3.org/2000/svg" height="70px" viewBox="0 -960 960 960" width="70px">
+  <defs>
+    <linearGradient id="stakeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M200-200v-560 560Zm0 80q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v100h-80v-100H200v560h560v-100h80v100q0 33-23.5 56.5T760-120H200Zm320-160q-33 0-56.5-23.5T440-360v-240q0-33 23.5-56.5T520-680h280q33 0 56.5 23.5T880-600v240q0 33-23.5 56.5T800-280H520Zm280-80v-240H520v240h280Zm-160-60q25 0 42.5-17.5T700-480q0-25-17.5-42.5T640-540q-25 0-42.5 17.5T580-480q0 25 17.5 42.5T640-420Z" fill="url(#stakeGradient)"/>
+</svg>
+                        <p>(Optional) Stake $KNOW to show commitment</p>
+                    </div>
+                    <div class="flow-step">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="70px" viewBox="0 -960 960 960" width="70px">
+  <defs>
+    <linearGradient id="badgeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M640-520q17 0 28.5-11.5T680-560q0-17-11.5-28.5T640-600q-17 0-28.5 11.5T600-560q0 17 11.5 28.5T640-520Zm-320-80h200v-80H320v80ZM180-120q-34-114-67-227.5T80-580q0-92 64-156t156-64h200q29-38 70.5-59t89.5-21q25 0 42.5 17.5T720-820q0 6-1.5 12t-3.5 11q-4 11-7.5 22.5T702-751l91 91h87v279l-113 37-67 224H480v-80h-80v80H180Zm60-80h80v-80h240v80h80l62-206 98-33v-141h-40L620-720q0-20 2.5-38.5T630-796q-29 8-51 27.5T547-720H300q-58 0-99 41t-41 99q0 98 27 191.5T240-200Zm240-298Z" fill="url(#badgeGradient)"/>
+</svg>
+                        <p>Complete → Earn XP + NFT Badge</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="micro-nfts">
+            <div class="container">
+                <h2>Micro-NFTs: Your On-Chain Resume</h2>
+                <p style="text-align: center; max-width: 800px; margin: 0 auto 3rem;">Every completed trade on Know Empire mints a unique, low-cost Micro-NFT. These aren't just collectibles; they're verifiable proof of your skill acquisition and contribution.</p>
+                <div class="nft-grid">
+                    <div class="nft-card">
+                        <img src="images/DAO icon.svg" alt="Coding Skill NFT">
+                        <h3>Web Development</h3>
+                        <p>Completed 3 trades</p>
+                        <p>Level: Expert</p>
+                    </div>
+                    <div class="nft-card">
+                        <img src="images/Bounty.svg" alt="Design Skill NFT">
+                        <h3>UI/UX Design</h3>
+                        <p>Completed 5 trades</p>
+                        <p>Level: Master</p>
+                    </div>
+                    <div class="nft-card">
+                        <img src="images/download.svg" alt="Crypto Skill NFT">
+                        <h3>Crypto Trading</h3>
+                        <p>Completed 2 trades</p>
+                        <p>Level: Advanced</p>
+                    </div>
+                     <div class="nft-card">
+                        <img src="images/Issue.svg" alt="Video Skill NFT">
+                        <h3>Video Editing</h3>
+                        <p>Completed 4 trades</p>
+                        <p>Level: Pro</p>
+                    </div>
+                </div>
+                <ul style="list-style: none; padding: 0; text-align: center; margin-top: 3rem;">
+                    <li>Every trade mints a $0.10 skill NFT</li>
+                    <li>Builds on-chain skill reputation</li>
+                    <li>Can be collected, ranked, and flexed</li>
+                </ul>
+                <p class="quote">“The more you trade, the more your NFT trail grows.”</p>
+            </div>
+        </section>
+
+        <section id="money-model">
+            <div class="container">
+                <h2>How We Make Money (Without Hurting Users)</h2>
+                <div class="diagram-box">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="100px" viewBox="0 -960 960 960" width="77px">
+  <defs>
+    <linearGradient id="badgeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M120-120v-80l80-80v160h-80Zm160 0v-240l80-80v320h-80Zm160 0v-320l80 81v239h-80Zm160 0v-239l80-80v319h-80Zm160 0v-400l80-80v480h-80ZM120-327v-113l280-280 160 160 280-280v113L560-447 400-607 120-327Z" fill="url(#badgeGradient)"/>
+</svg>
+                    <h3>Sustainable Growth Model</h3>
+                    <p>Know Empire is free to join and start trading. Our revenue model is designed to be fair and fuel platform development.</p>
+                    <ul style="list-style: none; padding: 0; font-size: 1.1rem; margin-top: 2rem;">
+                        <li>✅ Free to join</li>
+                        <li>🤝 2% fee on *completed* trades (only when value is exchanged!)</li>
+                        <li>🔒 Staking optional (more below)</li>
+                    </ul>
+                    <p style="margin-top: 2rem; font-weight: 600;">Funds are used for rewards, growth, and continuous development of the platform.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="staking">
+            <div class="container">
+                <h2>Staking = Skin in the Game</h2>
+                <div class="diagram-box">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="100px" viewBox="0 -960 960 960" width="70px">
+  <defs>
+    <linearGradient id="starBadgeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="m344-60-76-128-144-32 14-148-98-112 98-112-14-148 144-32 76-128 136 58 136-58 76 128 144 32-14 148 98 112-98 112 14 148-144 32-76 128-136-58-136 58Zm34-102 102-44 104 44 56-96 110-26-10-112 74-84-74-86 10-112-110-24-58-96-102 44-104-44-56 96-110 24 10 112-74 86 74 84-10 114 110 24 58 96Zm102-318Zm-42 142 226-226-56-58-170 170-86-84-56 56 142 142Z" fill="url(#starBadgeGradient)"/>
+</svg>
+                    <h3>Commitment & Trust</h3>
+                    <p>Staking $KNOW tokens before a trade is optional but signals serious commitment to the exchange, enhancing trust between users.</p>
+                    <ul style="list-style: none; padding: 0; font-size: 1.1rem; margin-top: 2rem;">
+                        <li>🔒 Staking is optional but shows commitment</li>
+                        <li>🔄 Refunded after trade completion & mutual feedback</li>
+                        <li>🚀 Top stakers get boosts & exclusive perks</li>
+                        <li>🔥 0.2% of staked $KNOW burned, 1.8% to treasury (if trade fee applies)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="team-up">
+            <div class="container">
+                <h2>Build Together, Earn Together</h2>
+                <div class="diagram-box">
+                    <span class="icon">🛠️</span>
+                    <h3>Collaborative Project Hub</h3>
+                    <p>Know Empire isn't just for 1-on-1 trades. Form teams to build real-world projects and services, leveraging diverse skill sets.</p>
+                    <ul style="list-style: none; padding: 0; font-size: 1.1rem; margin-top: 2rem;">
+                        <li><svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px">
+  <defs>
+    <linearGradient id="checkGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M576-529 441-664l50-51 85 85 187-187 51 51-238 237ZM336-228l264 81 235-72q-8-21-26.5-33T767-264H556q-17 0-34-2.5t-33-8.5l-68-26 22-69 70 26q11 4 21.5 6t21.5 2h92q0-10-5-17t-15-11l-256-92h-36v228ZM96-96v-432h274q8 0 15 1.5t14 3.5l256 92q30 11 47.5 37t17.5 58h47q60 0 102.5 42T912-192v24L601-72l-265-81v57H96Zm72-72h96v-288h-96v288Z" fill="url(#checkGradient)"/>
+</svg> Stake $KNOW together for shared projects</li>
+                        <li><svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px">
+  <defs>
+    <linearGradient id="profileGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M96-144v-92q0-26 12.5-47.5T143-318q54-32 114.5-49T384-384q66 0 126.5 17T625-318q22 13 34.5 34.5T672-236v92H96Zm72-72h432v-20q0-6.47-3.03-11.76-3.02-5.3-7.97-8.24-47-27-99-41.5T384-312q-54 0-106 14t-99 42q-4.95 2.83-7.98 7.91-3.02 5.09-3.02 12V-216Zm216-216q-60 0-102-42t-42-102h-12q-5.4 0-8.7-3.3-3.3-3.3-3.3-8.7 0-5.4 3.3-8.7 3.3-3.3 8.7-3.3h12q0-40 19.8-72.52Q279.6-705.03 312-724v64q0 5.4 3.3 8.7 3.3 3.3 8.7 3.3 5.4 0 8.7-3.3 3.3-3.3 3.3-8.7v-74.84q11-4.16 22.9-6.66 11.91-2.5 25-2.5 13.1 0 25.1 2.5 12 2.5 23 6.66V-660q0 5.4 3.3 8.7 3.3 3.3 8.7 3.3 5.4 0 8.7-3.3 3.3-3.3 3.3-8.7v-64q32.4 18.87 52.2 51.22Q528-640.43 528-600h12q5.4 0 8.7 3.3 3.3 3.3 3.3 8.7 0 5.4-3.3 8.7-3.3 3.3-8.7 3.3h-12q0 60-42 102t-102 42Zm.21-72Q414-504 435-525.15T456-576H312q0 30 21.21 51t51 21Zm261.94 120-5.07-25.31Q636-411 631.5-414q-4.5-3-8.5-6l-24 9-17-30 19-15.65q0-2.35-.5-5.35-.5-3-.5-6t.5-6q.5-3 .5-5.35L582-495l17-30 24 9q4-3 8.67-6 4.66-3 9.33-5l5.09-25H680l4 25q5 2 10 5t9 6l24-9 17 30-19 15.65q0 2.35.5 5.35.5 3 .5 6t-.5 6q-.5 3-.5 5.35L744-441l-17 30-24-9q-4 3-8.85 5.86-4.86 2.85-10.15 5.14l-4 25h-33.85ZM663-443q11 0 18-7t7-18q0-11-7-18t-18-7q-11 0-18.5 7t-7.5 18q0 11 7.5 18t18.5 7Zm81-133-7-37q-8-2-14-6t-12-9l-35 12-24-42 28-24q-1-4-1.5-7t-.5-7q0-4 .5-7.5t1.5-7.5l-28-24 24-42 35 12q6-5 12-9t14-6l6.88-36H792l8 36q8 2 14 6t12 9l34-12 24 42-27 24q1 4 1 7.5v7.5q0 4-.5 7.5T856-681l28 24-24 42-35-12q-6 5-12 9t-14 6l-6.87 36H744Zm23.96-77q18.04 0 30.54-12.46t12.5-30.5q0-18.04-12.46-30.54t-30.5-12.5q-18.04 0-30.54 12.46t-12.5 30.5q0 18.04 12.46 30.54t30.5 12.5ZM384-216Z" fill="url(#profileGradient)"/>
+</svg> Build real products, services, or dApps</li>
+                        <li><svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px">
+  <defs>
+    <linearGradient id="trophyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M349-144q-85 0-145-60t-60-145q0-35 11.5-68t32.5-60l130-165-72-174h468l-73 174 131 165q21 27 32.5 60t11.5 68q0 85-60 145t-145 60H349Zm131-180q-35 0-59.5-24.5T396-408q0-35 24.5-59.5T480-492q35 0 59.5 24.5T564-408q0 35-24.5 59.5T480-324Zm-96-348h192l30-72H354l30 72Zm-35 456h262q55 0 94-39t39-94q0-23-7.5-44T715-432L583-600H377L245-432q-14 18-21.5 39t-7.5 44q0 55 39 94t94 39Z" fill="url(#trophyGradient)"/>
+</svg> Earn a special Builder NFT & platform shoutout</li>
+                        <li><svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px">
+  <defs>
+    <linearGradient id="bookGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M444-192h72v-48h12q20.4 0 34.2-13.8Q576-267.6 576-288v-72q0-20.4-13.8-34.2Q548.4-408 528-408h-96v-72h144v-48h-60v-48h-72v48h-12q-20.4 0-34.2 13.8Q384-500.4 384-480v72q0 20.4 13.8 34.2Q411.6-360 432-360h96v72H384v48h60v48ZM263.72-96Q234-96 213-117.15T192-168v-624q0-29.7 21.15-50.85Q234.3-864 264-864h312l192 192v504q0 29.7-21.16 50.85Q725.68-96 695.96-96H263.72ZM528-624v-168H264v624h432v-456H528ZM264-792v189-189 624-624Z" fill="url(#bookGradient)"/>
+</svg> Standard 2% collab fee applies on project completion</li>
+                    </ul>
+                    <p style="margin-top: 2rem; font-weight: 600;">From concept to launch, build your next big thing with the Know Empire community.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="value-of-know">
+            <div class="container">
+                <h2>The Value of $KNOW</h2>
+                <p style="text-align: center; max-width: 800px; margin: 0 auto 3rem;">$KNOW is the utility token powering the Know Empire ecosystem, designed for scarcity and value accrual.</p>
+                <div class="section-content-grid">
+                    <div class="grid-item">
+                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px">
+  <defs>
+    <linearGradient id="networkGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M140-80q-24 0-42-18t-18-42v-172h60v172h172v60H140ZM80-648v-172q0-24 18-42t42-18h172v60H140v172H80Zm370 445q-98-11-167-80t-80-167h59q10 74 62.5 126T450-262v59ZM203-510q11-98 80-167t167-80v59q-74 10-126 62t-62 126h-59Zm277 100q-29 0-49.5-20.5T410-480q0-29 20.5-49.5T480-550q29 0 49.5 20.5T550-480q0 29-20.5 49.5T480-410Zm30 207v-59q74-10 126-62.5T698-450h59q-11 98-80 167t-167 80Zm188-307q-10-74-62-126t-126-62v-59q98 11 167 80t80 167h-59ZM648-80v-60h172v-172h60v172q0 24-18 42t-42 18H648Zm172-568v-172H648v-60h172q24 0 42 18t18 42v172h-60Z" fill="url(#networkGradient)"/>
+</svg></span>
+                        <h3>Core Utility</h3>
+                        <p>Needed to stake for trades, unlock advanced features, and mint skill NFTs.</p>
+                    </div>
+                    <div class="grid-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px">
+  <defs>
+    <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M220-400q0 63 28.5 118.5T328-189q-4-12-6-24.5t-2-24.5q0-32 12-60t35-51l113-111 113 111q23 23 35 51t12 60q0 12-2 24.5t-6 24.5q51-37 79.5-92.5T740-400q0-54-23-105.5T651-600q-21 15-44 23.5t-46 8.5q-61 0-101-41.5T420-714v-20q-46 33-83 73t-63 83.5q-26 43.5-40 89T220-400Zm260 24-71 70q-14 14-21.5 31t-7.5 37q0 41 29 69.5t71 28.5q42 0 71-28.5t29-69.5q0-20-7.5-37T551-306l-71-70Zm0-464v132q0 34 23.5 57t57.5 23q18 0 33.5-7.5T622-658l18-22q74 42 117 117t43 163q0 134-93 227T480-80q-134 0-227-93t-93-227q0-128 86-246.5T480-840Z" fill="url(#heartGradient)"/>
+</svg>
+                        <h3>Deflationary</h3>
+                        <p>A portion of $KNOW is burned with each transaction, increasing scarcity over time.</p>
+                    </div>
+                    <div class="grid-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px">
+  <defs>
+    <linearGradient id="giftGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="M160-80v-445H80v-230h220q-8-12-12-25.5t-4-27.5q0-46.67 32.67-79.33Q349.33-920 396-920q24 0 46.5 10t37.5 29q15-19 37.5-29t46.5-10q46.67 0 79.33 32.67Q676-854.67 676-808q0 14-4 27.5T660-755h220v230h-80v445H160Zm404.07-780Q542-860 527-845.07t-15 37Q512-786 526.93-771t37 15Q586-756 601-770.93t15-37Q616-830 601.07-845t-37-15ZM344-808.07Q344-786 358.93-771t37 15Q418-756 433-770.93t15-37Q448-830 433.07-845t-37-15Q374-860 359-845.07t-15 37ZM140-695v110h310v-110H140Zm310 555v-385H214v385h236Zm60 0h236v-385H510v385Zm310-445v-110H510v110h310Z" fill="url(#giftGradient)"/>
+</svg>
+                        <h3>Earn & Reward</h3>
+                        <p>Earned through platform activity, successful trades, partnerships, and bonuses.</p>
+                    </div>
+                     <div class="grid-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px">
+  <defs>
+    <linearGradient id="globeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5f72be"/>
+      <stop offset="100%" stop-color="#9b23ea"/>
+    </linearGradient>
+  </defs>
+  <path d="m187-551 106 45q18-36 38.5-71t43.5-67l-79-16-109 109Zm154 81 133 133q57-26 107-59t81-64q81-81 119-166t41-192q-107 3-192 41T464-658q-31 31-64 81t-59 107Zm229-96q-20-20-20-49.5t20-49.5q20-20 49.5-20t49.5 20q20 20 20 49.5T669-566q-20 20-49.5 20T570-566Zm-15 383 109-109-16-79q-32 23-67 43.5T510-289l45 106Zm326-694q9 136-34 248T705-418l-2 2-2 2 22 110q3 15-1.5 29T706-250L535-78l-85-198-170-170-198-85 172-171q11-11 25-15.5t29-1.5l110 22q1-1 2-1.5t2-1.5q99-99 211-142.5T881-877ZM149-325q35-35 85.5-35.5T320-326q35 35 34.5 85.5T319-155q-26 26-80.5 43T75-80q15-109 31.5-164t42.5-81Zm42 43q-14 15-25 47t-19 82q50-8 82-19t47-25q19-17 19.5-42.5T278-284q-19-18-44.5-17.5T191-282Z" fill="url(#globeGradient)"/>
+</svg>
+                        <h3>Reputation & Perks</h3>
+                        <p>Holding $KNOW builds your on-chain reputation and unlocks exclusive platform benefits.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="our-vision">
+            <div class="container">
+                <h2>The Future of Learning is Peer-to-Peer</h2>
+                <p style="text-align: center; font-size: 1.5rem; max-width: 900px; margin: 0 auto 3rem;">We envision a world where learning is not a one-way street, but a dynamic, collaborative exchange among individuals passionate about growth.</p>
+                <img src="images/on chain profile.svg" alt="Interconnected skill network graphic" style="max-width: 100%; height: auto; display: block; margin: 0 auto 3rem; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.4);">
+                <p class="quote">“We believe the next generation won’t learn alone — they’ll trade, teach, and build together.”</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <span class="cta">Join the Empire. Know more. Grow more.</span>
+            <p>&copy; 2025 Know Empire. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelector('.nav-links');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const sections = document.querySelectorAll('section');
+
+            // Toggle mobile navigation
+            menuToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+
+            // Smooth scrolling for desktop navigation
+            document.querySelectorAll('nav a').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    if (window.innerWidth > 1024) { // Only for desktop
+                        e.preventDefault();
+                        const targetId = this.getAttribute('href');
+                        document.querySelector(targetId).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                        navLinks.classList.remove('active'); // Close mobile menu if open
+                    } else {
+                        // For mobile, allow default link behavior to navigate to sections (which will appear as 'pages')
+                        // Or, you could still try smooth scroll but know it's less 'page-like'
+                        navLinks.classList.remove('active'); // Close mobile menu
+                    }
+                });
+            });
+
+            // For mobile/tablet, ensure sections are not forced to full height,
+            // allowing them to stack and feel like separate pages when scrolled.
+            // This is largely handled by the CSS media query setting `min-height: auto;`
+            // but JS could add more sophisticated page routing if needed.
+        });
+    </script>
+<!-- Add this just before </body> -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" title="Home">
+    <span class="nav-btn-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M3 10.5L12 4l9 6.5V20a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-4h-4v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10.5z" stroke="#9b23ea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+    <span class="nav-btn-label">Home</span>
+  </button>
+  <button class="nav-btn" title="Launch">
+    <span class="nav-btn-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M9 18V5l12-2-2 12H9zm0 0L3 21l6-3" stroke="#5f72be" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+    <span class="nav-btn-label">Launch</span>
+  </button>
+  <button class="nav-btn" title="Connect">
+    <span class="nav-btn-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M17 17a4 4 0 1 0-5.657-5.657M7 7a4 4 0 1 0 5.657 5.657M17 17l-2.5-2.5M7 7l2.5 2.5" stroke="#5f72be" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+    <span class="nav-btn-label">Connect</span>
+  </button>
+  <button class="nav-btn" title="Wallet">
+    <span class="nav-btn-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7zm16 4h-4a1 1 0 1 0 0 2h4a1 1 0 1 0 0-2z" stroke="#9b23ea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+    <span class="nav-btn-label">Wallet</span>
+  </button>
+</nav>
+
+<style>
+.bottom-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  background: rgba(24, 24, 40, 0.92);
+  border-radius: 24px 24px 32px 32px;
+  box-shadow: 0 8px 32px rgba(95,114,190,0.18), 0 1.5px 8px rgba(155,35,234,0.08);
+  display: flex;
+  gap: 2.2rem;
+  padding: 0.5rem 2.2rem 1.1rem 2.2rem;
+  z-index: 2000;
+  border: 1.5px solid #23234a;
+  backdrop-filter: blur(8px);
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  padding: 0.2rem 0.5rem 0 0.5rem;
+  transition: color 0.18s;
+}
+
+.nav-btn-icon svg {
+  width: 28px;
+  height: 28px;
+  display: block;
+  margin-bottom: 2px;
+  transition: stroke 0.18s;
+}
+
+.nav-btn-label {
+  font-size: 0.98rem;
+  margin-top: 2px;
+  color: #aaa;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: color 0.18s;
+}
+
+.nav-btn.active .nav-btn-icon svg,
+.nav-btn:focus .nav-btn-icon svg {
+  stroke: #9b23ea !important;
+}
+.nav-btn.active .nav-btn-label,
+.nav-btn:focus .nav-btn-label {
+  color: #9b23ea;
+}
+
+.nav-btn:not(.active):hover .nav-btn-label {
+  color: #5f72be;
+}
+.nav-btn:not(.active):hover .nav-btn-icon svg {
+  stroke: #5f72be !important;
+}
+
+@media (max-width: 600px) {
+  .bottom-nav {
+    gap: 1.1rem;
+    padding: 0.5rem 0.7rem 1rem 0.7rem;
+  }
+  .nav-btn {
+    min-width: 44px;
+  }
+  .nav-btn-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+  .nav-btn-label {
+    font-size: 0.85rem;
+  }
+}
+</style>
+
+</body>
+</html>

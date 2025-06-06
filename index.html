@@ -18,7 +18,7 @@
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
-            background-color:  #0d0d0d;
+            background-color: var(--dark-bg);
             color: var(--text-color);
             line-height: 1.6;
             scroll-behavior: smooth; /* For smooth scrolling on desktop */
@@ -36,7 +36,7 @@
         p { font-size: 1.1rem; }
 
         .container {
-            max-width: 800px;
+            max-width: 1100px;
             margin: 0;
             padding: 2rem;
         }
@@ -1251,6 +1251,295 @@ html, body {
   }
 }
 </style>
+
+<!-- Teacher/Learner Modal -->
+<div id="role-modal" style="display:none;position:fixed;z-index:4000;top:0;left:0;width:100vw;height:100vh;background:rgba(24,24,40,0.85);backdrop-filter:blur(2px);align-items:center;justify-content:center;flex-direction:column;">
+  <div id="role-step" style="background:#181828;padding:2.5rem 2rem 2rem 2rem;border-radius:18px;box-shadow:0 8px 32px rgba(95,114,190,0.18);max-width:340px;width:90%;text-align:center;position:relative;">
+    <button id="close-role-modal" style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:1.5rem;color:#bbb;cursor:pointer;">&times;</button>
+    <h2 style="margin-bottom:1.5rem;font-size:1.5rem;">Choose Your Role</h2>
+    <button class="role-btn" data-role="teacher" style="width:100%;padding:1rem 0;margin-bottom:1rem;background:linear-gradient(90deg,#5f72be,#9b23ea);color:#fff;font-size:1.1rem;font-weight:600;border:none;border-radius:10px;cursor:pointer;">I'm a Teacher</button>
+    <button class="role-btn" data-role="learner" style="width:100%;padding:1rem 0;background:#23234a;color:#fff;font-size:1.1rem;font-weight:600;border:none;border-radius:10px;cursor:pointer;">I'm a Learner</button>
+  </div>
+  <div id="course-step" style="display:none;background:#181828;padding:2.5rem 2rem 2rem 2rem;border-radius:18px;box-shadow:0 8px 32px rgba(95,114,190,0.18);max-width:340px;width:90%;text-align:left;position:relative;">
+    <button id="back-to-role" style="position:absolute;top:12px;left:16px;background:none;border:none;font-size:1.2rem;color:#bbb;cursor:pointer;">&#8592;</button>
+    <button id="close-course-modal" style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:1.5rem;color:#bbb;cursor:pointer;">&times;</button>
+    <h2 style="margin-bottom:1.2rem;font-size:1.2rem;" id="course-step-title"></h2>
+    <form id="course-form">
+      <div style="max-height:260px;overflow-y:auto;margin-bottom:1.2rem;">
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Artificial Intelligence (AI) & Machine Learning (ML)" required> Artificial Intelligence (AI) & Machine Learning (ML)</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Data Science"> Data Science</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Cloud Computing (AWS, Azure, Google Cloud)"> Cloud Computing (AWS, Azure, Google Cloud)</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Cybersecurity"> Cybersecurity</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Web Development (Full-Stack)"> Web Development (Full-Stack)</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Mobile App Development (iOS & Android)"> Mobile App Development (iOS & Android)</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="DevOps"> DevOps</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Data Analytics"> Data Analytics</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="User Experience (UX) / User Interface (UI) Design"> User Experience (UX) / User Interface (UI) Design</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Blockchain Technology"> Blockchain Technology</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Internet of Things (IoT)"> Internet of Things (IoT)</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Project Management (Tech-focused)"> Project Management (Tech-focused)</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Data Engineering"> Data Engineering</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Robotics"> Robotics</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Game Development"> Game Development</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Business Intelligence (BI)"> Business Intelligence (BI)</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Network Administration"> Network Administration</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Quantum Computing"> Quantum Computing</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Generative AI"> Generative AI</label>
+        <label style="display:block;margin-bottom:0.7rem;"><input type="radio" name="course" value="Technical Writing"> Technical Writing</label>
+      </div>
+      <button type="submit" style="width:100%;padding:0.8rem 0;background:linear-gradient(90deg,#5f72be,#9b23ea);color:#fff;font-size:1.1rem;font-weight:600;border:none;border-radius:10px;cursor:pointer;">Continue</button>
+    </form>
+  </div>
+  <div id="terms-step" style="display:none;background:#181828;padding:2.5rem 1.2rem 2rem 1.2rem;border-radius:18px;box-shadow:0 8px 32px rgba(95,114,190,0.18);max-width:370px;width:94%;text-align:left;position:relative;overflow-y:auto;max-height:90vh;">
+    <button id="back-to-course" style="position:absolute;top:12px;left:16px;background:none;border:none;font-size:1.2rem;color:#bbb;cursor:pointer;">&#8592;</button>
+    <button id="close-terms-modal" style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:1.5rem;color:#bbb;cursor:pointer;">&times;</button>
+    <h2 style="margin-bottom:1.2rem;font-size:1.2rem;">Terms &amp; Conditions</h2>
+    <div style="font-size:0.98rem;max-height:45vh;overflow-y:auto;color:#ccc;line-height:1.5;margin-bottom:1.2rem;">
+      <!-- (Your terms list here, as in your previous code) -->
+      <ol style="padding-left:1.2rem;">
+        <li><b>Prohibition of Stalking:</b> Stalking, harassment, or any form of unwanted digital or physical pursuit of another user is strictly prohibited on this platform.</li>
+        <!-- ...rest of your terms... -->
+      </ol>
+    </div>
+    <label style="display:flex;align-items:center;margin-bottom:1.2rem;">
+      <input type="checkbox" id="agree-terms" style="margin-right:0.6em;"> I have read and agree to the Terms &amp; Conditions above.
+    </label>
+    <button id="accept-terms-btn" disabled style="width:100%;padding:0.8rem 0;background:linear-gradient(90deg,#5f72be,#9b23ea);color:#fff;font-size:1.1rem;font-weight:600;border:none;border-radius:10px;cursor:pointer;">Continue</button>
+  </div>
+</div>
+
+<!-- Swap Modal -->
+<div id="swap-step" style="display:none;position:fixed;z-index:4000;top:0;left:0;width:100vw;height:100vh;background:rgba(24,24,40,0.85);backdrop-filter:blur(2px);align-items:center;justify-content:center;flex-direction:column;">
+  <div style="background:#181828;padding:2.5rem 1.2rem 2rem 1.2rem;border-radius:18px;box-shadow:0 8px 32px rgba(95,114,190,0.18);max-width:370px;width:94%;text-align:center;position:relative;">
+    <button id="close-swap-modal" style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:1.5rem;color:#bbb;cursor:pointer;">&times;</button>
+    <h2 style="margin-bottom:1.2rem;font-size:1.2rem;">Swap ETH for $KNOW</h2>
+    <p style="color:#ccc;margin-bottom:1.5rem;">
+      To participate in Know Empire trades, you need $KNOW tokens.<br>
+      Swap some of your Ethereum for $KNOW to get started.
+    </p>
+    <div style="margin-bottom:1.5rem;">
+      <div style="background:#23234a;padding:1.2rem;border-radius:10px;color:#fff;">
+        <b>Coming Soon:</b> In-app swap from ETH to $KNOW.<br>
+        For now, use your Farcaster wallet or a DEX to get $KNOW.
+      </div>
+    </div>
+    <button id="swap-done-btn" style="width:100%;padding:0.8rem 0;background:linear-gradient(90deg,#5f72be,#9b23ea);color:#fff;font-size:1.1rem;font-weight:600;border:none;border-radius:10px;cursor:pointer;">Done</button>
+  </div>
+</div>
+
+<!-- Transaction Evidence Modal -->
+<div id="evidence-step" style="display:none;position:fixed;z-index:4000;top:0;left:0;width:100vw;height:100vh;background:rgba(24,24,40,0.85);backdrop-filter:blur(2px);align-items:center;justify-content:center;flex-direction:column;">
+  <div style="background:#181828;padding:2.5rem 1.2rem 2rem 1.2rem;border-radius:18px;box-shadow:0 8px 32px rgba(95,114,190,0.18);max-width:370px;width:94%;text-align:center;position:relative;">
+    <button id="close-evidence-modal" style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:1.5rem;color:#bbb;cursor:pointer;">&times;</button>
+    <h2 style="margin-bottom:1.2rem;font-size:1.2rem;">Transaction Evidence</h2>
+    <p style="color:#ccc;margin-bottom:1.2rem;">Here is your transaction code. Share it with your match or on Farcaster!</p>
+    <div style="margin-bottom:1.2rem;">
+      <input id="tx-code" type="text" readonly style="width:90%;padding:0.7rem 0.5rem;font-size:1.1rem;text-align:center;border-radius:8px;border:none;background:#23234a;color:#fff;letter-spacing:0.08em;" />
+    </div>
+    <button id="copy-tx-btn" style="width:100%;padding:0.7rem 0;background:#5f72be;color:#fff;font-size:1rem;font-weight:600;border:none;border-radius:10px;cursor:pointer;margin-bottom:0.7rem;">Copy Code</button>
+    <button id="share-farcaster-btn" style="width:100%;padding:0.7rem 0;background:#9b23ea;color:#fff;font-size:1rem;font-weight:600;border:none;border-radius:10px;cursor:pointer;margin-bottom:0.7rem;">Share to Farcaster</button>
+    <button id="unstake-btn" style="width:100%;padding:0.7rem 0;background:#23234a;color:#fff;font-size:1rem;font-weight:600;border:none;border-radius:10px;cursor:pointer;">Unstake</button>
+  </div>
+</div>
+
+<!-- Connect Modal -->
+<div id="connect-modal" style="display:none;position:fixed;z-index:4100;top:0;left:0;width:100vw;height:100vh;background:rgba(24,24,40,0.85);backdrop-filter:blur(2px);align-items:center;justify-content:center;flex-direction:column;">
+  <div id="connect-step" style="background:#181828;padding:2.5rem 1.2rem 2rem 1.2rem;border-radius:18px;box-shadow:0 8px 32px rgba(95,114,190,0.18);max-width:370px;width:94%;text-align:center;position:relative;">
+    <button id="close-connect-modal" style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:1.5rem;color:#bbb;cursor:pointer;">&times;</button>
+    <h2 style="margin-bottom:1.2rem;font-size:1.2rem;">Enter Transaction Code</h2>
+    <input id="connect-code-input" type="text" placeholder="Paste your code here" style="width:90%;padding:0.7rem 0.5rem;font-size:1.1rem;text-align:center;border-radius:8px;border:none;background:#23234a;color:#fff;letter-spacing:0.08em;margin-bottom:1.2rem;" />
+    <button id="connect-code-btn" style="width:100%;padding:0.8rem 0;background:linear-gradient(90deg,#5f72be,#9b23ea);color:#fff;font-size:1.1rem;font-weight:600;border:none;border-radius:10px;cursor:pointer;">Connect</button>
+    <div id="connect-error" style="color:#ff5e5e;margin-top:1rem;display:none;">Invalid code. Please try again.</div>
+  </div>
+  <div id="connect-loading" style="display:none;background:#181828;padding:2.5rem 1.2rem 2rem 1.2rem;border-radius:18px;box-shadow:0 8px 32px rgba(95,114,190,0.18);max-width:370px;width:94%;text-align:center;position:relative;">
+    <h2 style="margin-bottom:1.2rem;font-size:1.2rem;">Verifying...</h2>
+    <p style="color:#ccc;margin-bottom:1.5rem;">Please wait while we verify your transaction code.</p>
+    <div style="font-size:2.2rem;font-weight:700;color:#9b23ea;" id="connect-countdown">30</div>
+  </div>
+  <div id="connect-success" style="display:none;background:#181828;padding:2.5rem 1.2rem 2rem 1.2rem;border-radius:18px;box-shadow:0 8px 32px rgba(95,114,190,0.18);max-width:370px;width:94%;text-align:center;position:relative;">
+    <button id="close-connect-success" style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:1.5rem;color:#bbb;cursor:pointer;">&times;</button>
+    <h2 style="margin-bottom:1.2rem;font-size:1.2rem;">Connected!</h2>
+    <p style="color:#ccc;margin-bottom:1.2rem;">Here are your selections:</p>
+    <div style="background:#23234a;padding:1.2rem;border-radius:10px;color:#fff;margin-bottom:1.2rem;">
+      <div><b>Role:</b> <span id="connect-role">Teacher</span></div>
+      <div><b>Course:</b> <span id="connect-course">Artificial Intelligence (AI) &amp; Machine Learning (ML)</span></div>
+      <div><b>Transaction Code:</b> <span id="connect-code-show">A2N0KGDE-G3PS7W</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  let selectedRole = '';
+  let selectedCourse = '';
+
+  // Launch modal
+  document.querySelectorAll('.nav-btn[title="Launch"]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.getElementById('role-modal').style.display = 'flex';
+      document.getElementById('role-step').style.display = 'block';
+      document.getElementById('course-step').style.display = 'none';
+      document.getElementById('terms-step').style.display = 'none';
+      document.getElementById('swap-step').style.display = 'none';
+      document.getElementById('evidence-step').style.display = 'none';
+    });
+  });
+
+  // Close modals
+  document.getElementById('close-role-modal').onclick = function() {
+    document.getElementById('role-modal').style.display = 'none';
+  };
+  document.getElementById('close-course-modal').onclick = function() {
+    document.getElementById('role-modal').style.display = 'none';
+  };
+  document.getElementById('close-terms-modal').onclick = function() {
+    document.getElementById('role-modal').style.display = 'none';
+  };
+  document.getElementById('close-swap-modal').onclick = function() {
+    document.getElementById('role-modal').style.display = 'none';
+  };
+  document.getElementById('close-evidence-modal').onclick = function() {
+    document.getElementById('role-modal').style.display = 'none';
+    document.getElementById('evidence-step').style.display = 'none';
+  };
+
+  // Back buttons
+  document.getElementById('back-to-role').onclick = function() {
+    document.getElementById('role-step').style.display = 'block';
+    document.getElementById('course-step').style.display = 'none';
+    document.getElementById('terms-step').style.display = 'none';
+  };
+  document.getElementById('back-to-course').onclick = function() {
+    document.getElementById('course-step').style.display = 'block';
+    document.getElementById('terms-step').style.display = 'none';
+  };
+
+  // Role selection
+  document.querySelectorAll('.role-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      selectedRole = this.getAttribute('data-role');
+      document.getElementById('role-step').style.display = 'none';
+      document.getElementById('course-step').style.display = 'block';
+      document.getElementById('terms-step').style.display = 'none';
+      document.getElementById('course-step-title').textContent =
+        selectedRole === 'teacher' ? 'What can you teach?' : 'What do you want to learn?';
+    });
+  });
+
+  // Course selection
+  document.getElementById('course-form').onsubmit = function(e) {
+    e.preventDefault();
+    selectedCourse = document.querySelector('input[name="course"]:checked').value;
+    document.getElementById('course-step').style.display = 'none';
+    document.getElementById('terms-step').style.display = 'block';
+    document.getElementById('agree-terms').checked = false;
+    document.getElementById('accept-terms-btn').disabled = true;
+  };
+
+  // Enable/disable Continue button based on checkbox
+  document.getElementById('agree-terms').addEventListener('change', function() {
+    document.getElementById('accept-terms-btn').disabled = !this.checked;
+  });
+
+  // Accept terms and go to swap step
+  document.getElementById('accept-terms-btn').onclick = function() {
+    document.getElementById('terms-step').style.display = 'none';
+    document.getElementById('swap-step').style.display = 'flex';
+  };
+
+  // Swap done (show evidence modal)
+  document.getElementById('swap-done-btn').onclick = function() {
+    document.getElementById('swap-step').style.display = 'none';
+    document.getElementById('evidence-step').style.display = 'flex';
+    // Generate random alphanumeric code
+    const code = Math.random().toString(36).substring(2, 10).toUpperCase() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    document.getElementById('tx-code').value = code;
+  };
+
+  // Copy code
+  document.getElementById('copy-tx-btn').onclick = function() {
+    const txInput = document.getElementById('tx-code');
+    txInput.select();
+    txInput.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    this.textContent = 'Copied!';
+    setTimeout(() => { this.textContent = 'Copy Code'; }, 1500);
+  };
+
+  // Share to Farcaster
+  document.getElementById('share-farcaster-btn').onclick = function() {
+    const code = document.getElementById('tx-code').value;
+    const text = encodeURIComponent(`I just swapped ETH for $KNOW on Know Empire! My transaction code: ${code} 🚀 #KnowEmpire`);
+    window.open(`https://warpcast.com/~/compose?text=${text}`, '_blank');
+  };
+
+  // Unstake
+  document.getElementById('unstake-btn').onclick = function() {
+    alert('Unstake request submitted. Your tokens will be returned if eligible.');
+    document.getElementById('role-modal').style.display = 'none';
+    document.getElementById('evidence-step').style.display = 'none';
+  };
+
+  // Connect modal logic
+  document.querySelectorAll('.nav-btn[title="Connect"]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.getElementById('connect-modal').style.display = 'flex';
+      document.getElementById('connect-step').style.display = 'block';
+      document.getElementById('connect-loading').style.display = 'none';
+      document.getElementById('connect-success').style.display = 'none';
+      document.getElementById('connect-code-input').value = '';
+      document.getElementById('connect-error').style.display = 'none';
+    });
+  });
+
+  document.getElementById('close-connect-modal').onclick = function() {
+    document.getElementById('connect-modal').style.display = 'none';
+  };
+
+  document.getElementById('close-connect-success').onclick = function() {
+    document.getElementById('connect-modal').style.display = 'none';
+  };
+
+  document.getElementById('connect-code-btn').onclick = function() {
+    const code = document.getElementById('connect-code-input').value.trim().toUpperCase();
+    document.getElementById('connect-error').style.display = 'none';
+    if (code.length > 0) {
+      document.getElementById('connect-step').style.display = 'none';
+      document.getElementById('connect-loading').style.display = 'block';
+      let countdown = 30;
+      document.getElementById('connect-countdown').textContent = countdown;
+      const interval = setInterval(() => {
+        countdown--;
+        document.getElementById('connect-countdown').textContent = countdown;
+        if (countdown <= 0) {
+          clearInterval(interval);
+          document.getElementById('connect-loading').style.display = 'none';
+          document.getElementById('connect-success').style.display = 'block';
+          document.getElementById('connect-role').textContent = selectedRole ? (selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)) : "Teacher";
+          document.getElementById('connect-course').textContent = selectedCourse || "Artificial Intelligence (AI) & Machine Learning (ML)";
+          document.getElementById('connect-code-show').textContent = code;
+        }
+      }, 1000);
+    } else {
+      document.getElementById('connect-error').style.display = 'block';
+    }
+  };
+
+  // Optional: close modals when clicking outside
+  document.getElementById('role-modal').addEventListener('click', function(e) {
+    if (e.target === this) this.style.display = 'none';
+  });
+  document.getElementById('swap-step').addEventListener('click', function(e) {
+    if (e.target === this) this.style.display = 'none';
+  });
+  document.getElementById('evidence-step').addEventListener('click', function(e) {
+    if (e.target === this) this.style.display = 'none';
+  });
+  document.getElementById('connect-modal').addEventListener('click', function(e) {
+    if (e.target === this) this.style.display = 'none';
+  });
+});
+</script>
 
 </body>
 </html>

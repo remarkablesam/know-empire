@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Firebase App (the core Firebase SDK) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <meta charset="UTF-8">
+  <title>All-in-One Creator Chat</title>
+  <style>
+    body { margin:0; font-family:sans-serif; background:#181828; color:#fff; }
+    #main { display:flex; height:100vh; }
+    #sidebar { width:220px; background:#23234a; padding:1rem 0; display:flex; flex-direction:column; gap:1rem; }
+    #sidebar button { width:90%; margin:0 auto; padding:0.7rem; background:#5f72be; color:#fff; border:none; border-radius:8px; font-size:1rem; cursor:pointer; }
+    #sidebar button.active { background:#9b23ea; }
+    #content { flex:1; display:flex; flex-direction:column; }
+    #chat-area { flex:1; display:flex; flex-direction:column; padding:1rem; overflow:auto; }
+    #messages { flex:1; overflow-y:auto; margin-bottom:1rem; }
+    .msg { margin-bottom:0.7rem; }
+    .msg.user { text-align:right; }
+    .msg .bubble { display:inline-block; padding:0.6em 1em; border-radius:16px; background:#5f72be; color:#fff; }
+    .msg.other .bubble { background:#23234a; }
+    #chat-tools { display:flex; gap:0.5rem; }
+    #chat-input { flex:1; padding:0.7rem; border-radius:8px; border:none; font-size:1rem; }
+    #voice-btn, #send-btn { padding:0.7rem 1.2rem; border:none; border-radius:8px; background:#9b23ea; color:#fff; font-weight:600; cursor:pointer; }
+    #tools-area { flex:1; display:none; flex-direction:column; padding:1rem; overflow:auto; }
+    #tools-area.active { display:flex; }
+    #editor, #notepad, #terminal, #canvas-area, #coin-area, #ai-area, #voicegen-area, #content-area { display:none; flex:1; }
+    #editor, #notepad, #terminal, #canvas-area, #coin-area, #ai-area, #voicegen-area, #content-area { background:#23234a; border-radius:10px; padding:1rem; margin-bottom:1rem; }
+    #canvas { background:#fff; border:1px solid #ccc; border-radius:8px; }
+    #terminal-output { background:#111; color:#0f0; padding:0.5em; height:120px; overflow-y:auto; border-radius:6px; margin-bottom:0.5em; }
+    #terminal-input { width:100%; padding:0.5em; border-radius:6px; border:none; }
+    #voicegen-audio { margin-top:1em; }
+    #notepad-area { width:100%; height:200px; }
+    #coin-area, #ai-area, #content-area { color:#fff; }
+    .tool-title { font-weight:bold; margin-bottom:0.5em; }
+  </style>
+  <!-- Monaco Editor CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs/loader.js"></script>
+</head>
+<body>
+  <div id="main">
+    <div id="sidebar">
+      <button class="active" data-tool="chat">Chat</button>
+      <button data-tool="editor">VS Code</button>
+      <button data-tool="notepad">Notepad</button>
+      <button data-tool="terminal">Terminal</button>
+      <button data-tool="canvas">Graphics</button>
+      <button data-tool="coin">Coin Analysis</button>
+      <button data-tool="ai">AI Chat</button>
+      <button data-tool="voicegen">AI Voice</button>
+      <button data-tool="content">Content Tools</button>
+      </ul>
+          <button id="connect-code-btn" style="width:100%;padding:0.8rem 0;background:linear-gradient(90deg,#5f72be,#9b23ea);color:#fff;font-size:1.1rem;font-weight:600;border:none;border-radius:10px;cursor:pointer;margin-top:1.2rem;">
+    Connect with Code
+  </button>
+  <div id="connect-code-area" style="display:none;margin-top:1rem;">
+    <input id="room-code-input" type="text" placeholder="Paste your code here..." style="padding:0.5em;border-radius:8px;border:none;width:60%;">
+    <button id="join-room-btn" style="padding:0.5em 1em;border-radius:8px;border:none;background:#9b23ea;color:#fff;cursor:pointer;">Join Chat Room</button>
+    <button id="disconnect-room-btn" style="padding:0.5em 1em;border-radius:8px;border:none;background:#ff5e5e;color:#fff;cursor:pointer;display:none;">Disconnect</button>
+    <span id="current-room" style="margin-left:1em;color:#9b23ea;font-weight:bold;"></span>
+  </div>
+    </div>
+    <div id="content">
+      <!-- Chat Area -->
+      <div id="chat-area" class="active">
+        <div id="messages"></div>
+        <div id="chat-tools">
+          <input id="chat-input" type="text" placeholder="Type a message...">
+          <button id="voice-btn" title="Send Voice Note">🎤</button>
+          <button id="send-btn">Send</button>
+        </div>
+        <div id="voice-list"></div>
+      </div>
+      <!-- Tools Area -->
+      <div id="tools-area">
+        <div id="editor">
+          <div class="tool-title">VS Code Editor</div>
+          <div id="monaco" style="height:300px;width:100%;border-radius:8px;"></div>
+        </div>
+        <div id="notepad">
+          <div class="tool-title">Notepad</div>
+          <textarea id="notepad-area" placeholder="Write notes here..."></textarea>
+        </div>
+        <div id="terminal">
+          <div class="tool-title">Terminal (Simulated Bash)</div>
+          <div id="terminal-output" style="background:#111; color:#0f0; padding:0.5em; height:180px; overflow-y:auto; border-radius:6px; margin-bottom:0.5em; font-family:monospace;"></div>
+          <input id="terminal-input" type="text" placeholder="Type a command..." autocomplete="off" style="width:100%; padding:0.5em; border-radius:6px; border:none; background:#23234a; color:#fff;">
+        </div>
+        <div id="canvas-area">
+          <div class="tool-title">Graphics Design Tool</div>
+          <canvas id="canvas" width="400" height="200"></canvas>
+          <br>
+          <button id="clear-canvas">Clear</button>
+        </div>
+        <div id="coin-area">
+          <div class="tool-title">Coin Analysis Chat</div>
+          <div>Ask about coins (e.g., BTC, ETH):</div>
+          <input id="coin-input" type="text" placeholder="Type coin symbol...">
+          <button id="coin-send">Analyze</button>
+          <div id="coin-result"></div>
+          <!-- Coin chart will appear here -->
+<div id="coin-chart" style="margin-top:1em; min-height:350px;"></div>
+        </div>
+        <div id="ai-area">
+          <div class="tool-title">Local AI Chat</div>
+          <input id="ai-input" type="text" placeholder="Ask AI...">
+          <button id="ai-send">Ask</button>
+          <div id="ai-result"></div>
+        </div>
+        <div id="voicegen-area">
+          <div class="tool-title">AI Voice Generator</div>
+          <input id="voicegen-text" type="text" placeholder="Text to speech...">
+          <button id="voicegen-btn">Generate Voice</button>
+          <audio id="voicegen-audio" controls style="display:none;"></audio>
+          <a id="voicegen-download" href="#" download="voice.mp3" style="display:none;">Download Voice</a>
+        </div>
+        <div id="content-area">
+          <div class="tool-title">Content Creator Tools</div>
+          <ul style="list-style:none;padding:0;">
+            <li><button id="word-counter-btn" style="width:100%;margin-bottom:0.5em;">Word Counter</button></li>
+            <li><button id="markdown-btn" style="width:100%;margin-bottom:0.5em;">Markdown Preview</button></li>
+            <li><button id="image-uploader-btn" style="width:100%;margin-bottom:0.5em;">Image Uploader</button></li>
+            <li><button id="video-embedder-btn" style="width:100%;margin-bottom:0.5em;">Video Embedder</button></li>
+          </ul>
+          <div id="content-tool-panel" style="margin-top:1em;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+
+    // Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAImI6TfbTiWcNsK3zf6OkEF73fyxz-QUE",
+  authDomain: "creator-394210.firebaseapp.com",
+  projectId: "creator-394210",
+  storageBucket: "creator-394210.appspot.com",
+  messagingSenderId: "696495221266",
+  appId: "1:696495221266:web:21b79f1fe66177778206cb",
+  measurementId: "G-DPD9TKVX6X"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+    // Sidebar navigation
+    const sidebarBtns = document.querySelectorAll('#sidebar button');
+    const chatArea = document.getElementById('chat-area');
+    const toolsArea = document.getElementById('tools-area');
+    const toolDivs = {
+      editor: document.getElementById('editor'),
+      notepad: document.getElementById('notepad'),
+      terminal: document.getElementById('terminal'),
+      canvas: document.getElementById('canvas-area'),
+      coin: document.getElementById('coin-area'),
+      ai: document.getElementById('ai-area'),
+      voicegen: document.getElementById('voicegen-area'),
+      content: document.getElementById('content-area')
+    };
+    sidebarBtns.forEach(btn => {
+      btn.onclick = () => {
+        sidebarBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if(btn.dataset.tool === 'chat') {
+          chatArea.classList.add('active');
+          toolsArea.classList.remove('active');
+        } else {
+          chatArea.classList.remove('active');
+          toolsArea.classList.add('active');
+          Object.keys(toolDivs).forEach(k => toolDivs[k].style.display = 'none');
+          toolDivs[btn.dataset.tool].style.display = 'block';
+        }
+      };
+    });
+
+    // --- Firebase Chat Logic ---
+const messages = document.getElementById('messages');
+const chatInput = document.getElementById('chat-input');
+const sendBtn = document.getElementById('send-btn');
+
+// Simple user name for demo (in real app, use Firebase Auth)
+const username = "User" + Math.floor(Math.random() * 1000);
+
+// Send message to Firestore
+sendBtn.onclick = () => {
+  const text = chatInput.value.trim();
+  if (text) {
+    db.collection("messages").add({
+      text,
+      user: username,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    chatInput.value = '';
+  }
+};
+chatInput.addEventListener('keydown', e => {
+  if(e.key === 'Enter') sendBtn.onclick();
+});
+
+    // Listen for new messages in Firestore
+    db.collection("messages").orderBy("timestamp")
+  .onSnapshot(snapshot => {
+    messages.innerHTML = "";
+    snapshot.forEach(doc => {
+      const msg = doc.data();
+      const div = document.createElement('div');
+      div.className = 'msg ' + (msg.user === username ? 'user' : 'other');
+      div.innerHTML = `<span class="bubble">${msg.user}: ${msg.text}</span>`;
+      messages.appendChild(div);
+    });
+    messages.scrollTop = messages.scrollHeight;
+  });
+
+    // Voice note logic
+    let mediaRecorder, audioChunks = [];
+    const voiceBtn = document.getElementById('voice-btn');
+    const voiceList = document.getElementById('voice-list');
+    voiceBtn.onclick = async () => {
+      if (voiceBtn.textContent === "🎤") {
+        if (!navigator.mediaDevices) return alert("No mic access.");
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(audioChunks, {type:'audio/webm'});
+          const url = URL.createObjectURL(audioBlob);
+          const audio = document.createElement('audio');
+          audio.controls = true;
+          audio.src = url;
+          voiceList.appendChild(audio);
+        };
+        mediaRecorder.start();
+        voiceBtn.textContent = "⏹️";
+      } else {
+        mediaRecorder.stop();
+        voiceBtn.textContent = "🎤";
+      }
+    };
+
+    // Voice to text (speech recognition)
+    if ('webkitSpeechRecognition' in window) {
+      chatInput.addEventListener('dblclick', () => {
+        const rec = new webkitSpeechRecognition();
+        rec.lang = 'en-US';
+        rec.onresult = e => chatInput.value = e.results[0][0].transcript;
+        rec.start();
+      });
+      chatInput.placeholder += " (double-click for voice to text)";
+    }
+
+    // Monaco Editor (VS Code)
+    require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs' }});
+    window.MonacoEnvironment = { getWorkerUrl: () => proxy };
+    let proxy = URL.createObjectURL(new Blob([`
+      self.MonacoEnvironment = {baseUrl: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/'};
+      importScripts('https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs/base/worker/workerMain.js');
+    `], { type: 'text/javascript' }));
+    require(["vs/editor/editor.main"], function () {
+      monaco.editor.create(document.getElementById('monaco'), {
+        value: "// Start coding!\n",
+        language: "javascript",
+        theme: "vs-dark"
+      });
+    });
+
+    // Notepad (auto-save to localStorage)
+    const notepadArea = document.getElementById('notepad-area');
+    notepadArea.value = localStorage.getItem('notepad') || '';
+    notepadArea.oninput = () => localStorage.setItem('notepad', notepadArea.value);
+
+    // Terminal (simulated)
+    const terminalOutput = document.getElementById('terminal-output');
+    const terminalInput = document.getElementById('terminal-input');
+    const bashPrompt = '<span style="color:#9b23ea;">Remarkable</span>:<span style="color:#5f72be;">~</span>$ ';
+
+function printToTerminal(text) {
+  terminalOutput.innerHTML += `<div>${text}</div>`;
+  terminalOutput.scrollTop = terminalOutput.scrollHeight;
+}
+
+// Initial prompt
+printToTerminal(bashPrompt);
+
+terminalInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const cmd = terminalInput.value.trim();
+    printToTerminal(bashPrompt + cmd);
+    if (cmd === 'help') {
+      printToTerminal('Available commands: <b>help</b>, <b>date</b>, <b>echo [msg]</b>, <b>clear</b>, <b>welcome</b>, <b>ls</b>, <b>cd</b>');
+    } else if (cmd === 'date') {
+      printToTerminal(new Date().toString());
+    } else if (cmd.startsWith('echo ')) {
+      printToTerminal(cmd.slice(5));
+    } else if (cmd === 'clear') {
+      terminalOutput.innerHTML = '';
+      printToTerminal(bashPrompt);
+    } else if (cmd === 'welcome') {
+      printToTerminal('Welcome to your simulated web terminal! 🚀');
+    } else if (cmd === 'ls') {
+      printToTerminal('Documents  Downloads  Music  Pictures  Videos');
+    } else if (cmd.startsWith('cd')) {
+      printToTerminal('Changed directory (simulated)');
+    } else if (cmd === '') {
+      // Do nothing for empty input
+    } else {
+      printToTerminal('Command not found: ' + cmd);
+    }
+    terminalInput.value = '';
+  }
+});
+
+    // Graphics tool (simple paint)
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    canvas.onmousedown = e => { drawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); };
+    canvas.onmousemove = e => { if(drawing){ ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); }};
+    canvas.onmouseup = () => drawing = false;
+    document.getElementById('clear-canvas').onclick = () => { ctx.clearRect(0,0,canvas.width,canvas.height); };
+
+    // Coin analysis (placeholder)
+    document.getElementById('coin-send').onclick = async () => {
+  const coin = document.getElementById('coin-input').value.trim().toLowerCase();
+  const resultDiv = document.getElementById('coin-result');
+  const chartDiv = document.getElementById('coin-chart');
+  if (!coin) {
+    resultDiv.textContent = '';
+    chartDiv.innerHTML = '';
+    return;
+  }
+  resultDiv.textContent = 'Loading...';
+  chartDiv.innerHTML = '';
+
+  // Get coin list to find the correct id
+  const listRes = await fetch('https://api.coingecko.com/api/v3/coins/list');
+  const coins = await listRes.json();
+  const found = coins.find(c => c.symbol === coin || c.id === coin);
+  if (!found) {
+    resultDiv.textContent = 'Coin not found!';
+    chartDiv.innerHTML = '';
+    return;
+  }
+
+  // Fetch coin data
+  const res = await fetch(`https://api.coingecko.com/api/v3/coins/${found.id}`);
+  if (!res.ok) {
+    resultDiv.textContent = 'Error fetching data!';
+    chartDiv.innerHTML = '';
+    return;
+  }
+  const data = await res.json();
+  const price = data.market_data.current_price.usd;
+  const marketCap = data.market_data.market_cap.usd;
+  const change = data.market_data.price_change_percentage_24h;
+
+  // Simple buy/sell suggestion
+  let advice = '';
+  if (typeof change === 'number') {
+    if (change > 2) advice = '<span style="color:#4caf50;font-weight:bold;">Consider Selling (Price up)</span>';
+    else if (change < -2) advice = '<span style="color:#ff5252;font-weight:bold;">Consider Buying (Price down)</span>';
+    else advice = '<span style="color:#ffc107;font-weight:bold;">Hold (Stable)</span>';
+  }
+
+  resultDiv.innerHTML = `
+    <b>${data.name} (${data.symbol.toUpperCase()})</b><br>
+    Price: $${price}<br>
+    Market Cap: $${marketCap.toLocaleString()}<br>
+    24h Change: ${change ? change.toFixed(2) : 'N/A'}%<br>
+    Advice: ${advice}
+  `;
+
+  // Show TradingView chart
+  // Use symbol: BINANCE:BTCUSDT for BTC, etc.
+  let tvSymbol = '';
+  if (data.symbol.toUpperCase() === 'BTC') tvSymbol = 'BINANCE:BTCUSDT';
+  else if (data.symbol.toUpperCase() === 'ETH') tvSymbol = 'BINANCE:ETHUSDT';
+  else tvSymbol = `BINANCE:${data.symbol.toUpperCase()}USDT`;
+
+  chartDiv.innerHTML = `
+    <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_${data.symbol}&symbol=${tvSymbol}&interval=60&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&studies=[]&theme=dark&style=1&timezone=Etc/UTC&withdateranges=1&hideideas=1&studies_overrides={}" style="width:100%;min-height:350px;border:none;border-radius:8px;background:#23234a;"></iframe>
+  `;
+};
+
+    // Local AI response (demo)
+    document.getElementById('ai-send').onclick = async () => {
+  const q = document.getElementById('ai-input').value.trim();
+  const resultDiv = document.getElementById('ai-result');
+  if (!q) {
+    resultDiv.textContent = '';
+    return;
+  }
+  resultDiv.textContent = 'Thinking...';
+
+  // Replace YOUR_OPENAI_API_KEY with your actual key
+  const apiKey = "";
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + apiKey
+    },
+    body: JSON.stringify({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: q }]
+    })
+  });
+  const data = await response.json();
+  if (data.choices && data.choices.length > 0) {
+    resultDiv.textContent = data.choices[0].message.content.trim();
+  } else {
+    resultDiv.textContent = "AI could not respond.";
+  }
+};
+
+    // AI Voice Generator (browser TTS)
+    document.getElementById('voicegen-btn').onclick = () => {
+      const txt = document.getElementById('voicegen-text').value.trim();
+      if(!txt) return;
+      const synth = window.speechSynthesis;
+      const utter = new SpeechSynthesisUtterance(txt);
+      utter.onend = () => {
+        // Downloadable audio is not natively supported, so we just play it
+      };
+      synth.speak(utter);
+      document.getElementById('voicegen-audio').style.display = 'none';
+      document.getElementById('voicegen-download').style.display = 'none';
+    };
+
+    // Content creator tools (placeholder)
+    // You can expand this section as needed
+
+    // Show connect code area when button is clicked
+document.getElementById('connect-code-btn').onclick = function() {
+  const area = document.getElementById('connect-code-area');
+  area.style.display = area.style.display === 'none' ? 'block' : 'none';
+};
+
+// --- Room Chat Logic ---
+let currentRoom = null;
+let unsubscribeRoom = null;
+const disconnectBtn = document.getElementById('disconnect-room-btn');
+
+document.getElementById('join-room-btn').onclick = function() {
+  const code = document.getElementById('room-code-input').value.trim().toUpperCase();
+  if (!code) return alert("Please enter a code!");
+  joinRoom(code);
+};
+
+function joinRoom(code) {
+  // Unsubscribe from previous room if any
+  if (unsubscribeRoom) unsubscribeRoom();
+  currentRoom = code;
+  document.getElementById('current-room').textContent = "Room: " + code;
+  disconnectBtn.style.display = "inline-block";
+  // Listen for messages in this room
+  unsubscribeRoom = db.collection("rooms").doc(code).collection("messages").orderBy("timestamp")
+    .onSnapshot(snapshot => {
+      messages.innerHTML = "";
+      snapshot.forEach(doc => {
+        const msg = doc.data();
+        const div = document.createElement('div');
+        div.className = 'msg ' + (msg.user === username ? 'user' : 'other');
+        div.innerHTML = `<span class="bubble">${msg.user}: ${msg.text}</span>`;
+        messages.appendChild(div);
+      });
+      messages.scrollTop = messages.scrollHeight;
+    });
+}
+
+// Disconnect from room
+disconnectBtn.onclick = function() {
+  if (unsubscribeRoom) unsubscribeRoom();
+  currentRoom = null;
+  document.getElementById('current-room').textContent = "";
+  disconnectBtn.style.display = "none";
+  messages.innerHTML = "";
+  alert("Disconnected from chat room.");
+};
+
+// Send message to the current room
+sendBtn.onclick = () => {
+  const text = chatInput.value.trim();
+  if (text && currentRoom) {
+    db.collection("rooms").doc(currentRoom).collection("messages").add({
+      text,
+      user: username,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    chatInput.value = '';
+  } else if (!currentRoom) {
+    alert("Join a room first!");
+  }
+};
+chatInput.addEventListener('keydown', e => {
+  if(e.key === 'Enter') sendBtn.onclick();
+});
+
+
+// --- Content Creator Tools Logic ---
+const panel = document.getElementById('content-tool-panel');
+
+// Word Counter
+document.getElementById('word-counter-btn').onclick = function() {
+  panel.innerHTML = `
+    <textarea id="wc-input" style="width:100%;height:80px;"></textarea>
+    <div>Words: <span id="wc-count">0</span></div>
+  `;
+  const input = document.getElementById('wc-input');
+  const count = document.getElementById('wc-count');
+  input.oninput = () => {
+    count.textContent = input.value.trim().split(/\s+/).filter(Boolean).length;
+  };
+};
+
+// Markdown Preview
+document.getElementById('markdown-btn').onclick = function() {
+  panel.innerHTML = `
+    <textarea id="md-input" style="width:100%;height:80px;"></textarea>
+    <div style="margin-top:1em;background:#23234a;padding:1em;border-radius:8px;">
+      <div id="md-preview" style="color:#fff;"></div>
+    </div>
+  `;
+  const input = document.getElementById('md-input');
+  const preview = document.getElementById('md-preview');
+  input.oninput = () => {
+    preview.innerHTML = marked.parse(input.value);
+  };
+  // Load marked.js for markdown parsing
+  if (!window.marked) {
+    const script = document.createElement('script');
+    script.src = "https://cdn.jsdelivr.net/npm/marked/marked.min.js";
+    script.onload = () => { preview.innerHTML = marked.parse(input.value); };
+    document.body.appendChild(script);
+  }
+};
+
+// Image Uploader
+document.getElementById('image-uploader-btn').onclick = function() {
+  panel.innerHTML = `
+    <input type="file" id="img-upload" accept="image/*">
+    <div id="img-preview" style="margin-top:1em;"></div>
+  `;
+  document.getElementById('img-upload').onchange = function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      document.getElementById('img-preview').innerHTML = `<img src="${url}" style="max-width:100%;border-radius:8px;">`;
+    }
+  };
+};
+
+// Video Embedder
+document.getElementById('video-embedder-btn').onclick = function() {
+  panel.innerHTML = `
+    <input type="text" id="vid-url" placeholder="Paste YouTube or Vimeo URL" style="width:100%;">
+    <div id="vid-preview" style="margin-top:1em;"></div>
+  `;
+  document.getElementById('vid-url').oninput = function(e) {
+    const url = e.target.value.trim();
+    let embed = '';
+    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+      const id = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
+      embed = `<iframe width="100%" height="250" src="https://www.youtube.com/embed/${id}" frameborder="0" allowfullscreen></iframe>`;
+    } else if (url.includes('vimeo.com')) {
+      const id = url.split('/').pop();
+      embed = `<iframe src="https://player.vimeo.com/video/${id}" width="100%" height="250" frameborder="0" allowfullscreen></iframe>`;
+    }
+    document.getElementById('vid-preview').innerHTML = embed;
+  };
+};
+
+  </script>
+</body>
+</html>
